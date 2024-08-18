@@ -44,6 +44,10 @@ public class ProductCategoryController {
     public void createProduct(@RequestBody CreateProductRequestDto createProductRequestDto) {
         productCategoryService.createProduct(createProductRequestDto);
     }
+    @DeleteMapping(path = "{id}")
+    public void deleteProductById(@PathVariable Long id) {
+        productCategoryService.deleteProductById(id);
+    }
 
 
 }

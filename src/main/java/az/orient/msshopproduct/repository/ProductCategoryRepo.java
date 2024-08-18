@@ -28,7 +28,7 @@ public interface ProductCategoryRepo extends JpaRepository<ProductCategoryEntity
             "JOIN pc.category c " +
             "LEFT JOIN CategoryEntity parent_c ON c.parentCategory.id = parent_c.id " +
             "where pc.id=:productId")
-    ProductCategoryResponseDto findByProductId(@Param("productId") Long productId);
+    ProductCategoryResponseDto findProductCategoryByProductId(@Param("productId") Long productId);
 
 
     @Query("SELECT new az.orient.msshopproduct.dto.ProductCategoryResponseDto(" +
@@ -45,4 +45,7 @@ public interface ProductCategoryRepo extends JpaRepository<ProductCategoryEntity
     List<ProductCategoryEntity> findByBrandId(Long brandId);
 
     List<ProductEntity> findByModelIdIn(List<Long> modelIds);
+    ProductCategoryEntity findByProductId(Long productId);
+
+
 }

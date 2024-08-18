@@ -9,6 +9,7 @@ import az.orient.msshopproduct.entity.ProductCategoryEntity;
 import az.orient.msshopproduct.entity.ProductEntity;
 import az.orient.msshopproduct.exception.BrandNotFoundException;
 import az.orient.msshopproduct.exception.CategoryIdNotFoundException;
+import az.orient.msshopproduct.exception.ProductIdNotFoundException;
 import az.orient.msshopproduct.repository.CategoryRepo;
 import az.orient.msshopproduct.repository.ProductCategoryRepo;
 import az.orient.msshopproduct.repository.ProductRepo;
@@ -86,27 +87,35 @@ public class ProductCategoryService {
         }).collect(Collectors.toList());
     }
 
-    public void   createProduct(CreateProductRequestDto createProductRequestDto) {
-        ProductEntity productEntity=new ProductEntity();
+    public void createProduct(CreateProductRequestDto createProductRequestDto) {
+        ProductEntity productEntity = new ProductEntity();
         productEntity.setProductCode(createProductRequestDto.getProductCode());
         productEntity.setModelId(createProductRequestDto.getModelId());
         productEntity.setPrice(createProductRequestDto.getPrice());
         productEntity.setStatus(Status.ACTIVE);
-        productEntity=productRepo.save(productEntity);
-        CategoryEntity categoryEntity=new CategoryEntity();
+        productEntity = productRepo.save(productEntity);
+        CategoryEntity categoryEntity = new CategoryEntity();
         categoryEntity.setId(createProductRequestDto.getCategoryId());
-        ProductCategoryEntity productCategoryEntity=new ProductCategoryEntity();
+        ProductCategoryEntity productCategoryEntity = new ProductCategoryEntity();
         productCategoryEntity.setProduct(productEntity);
         productCategoryEntity.setCategory(categoryEntity);
         productCategoryEntity.setModelId(createProductRequestDto.getModelId());
         productCategoryEntity.setBrandId(createProductRequestDto.getBrandId());
+        productCategoryEntity.setStatus(Status.ACTIVE);
         productCategoryRepo.save(productCategoryEntity);
-
-
     }
 
     public ProductCategoryResponseDto getProductById(Long id) {
-        return productCategoryRepo.findByProductId(id);
+        return productCategoryRepo.findProductCategoryByProductId(id);
+    }
+
+    public void deleteProductById(Long id) {
+        ProductEntity productEntity = productRepo.findById(id).orElseThrow(() -> new ProductIdNotFoundException("Product id not found with id:" + id));
+        productEntity.setStatus(Status.DELETED);
+        productRepo.save(productEntity);
+        ProductCategoryEntity productCategoryEntity = productCategoryRepo.findByProductId(id);
+        productCategoryEntity.setStatus(Status.DELETED);
+        productCategoryRepo.save(productCategoryEntity);
     }
 }
 

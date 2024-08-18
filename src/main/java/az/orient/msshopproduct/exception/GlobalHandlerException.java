@@ -30,4 +30,9 @@ public class GlobalHandlerException {
         var result = ExceptionResponse.builder().code(HttpStatus.NOT_FOUND.value()).message(ex.getMessage()).build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
     }
+    @ExceptionHandler
+    public ResponseEntity handleProductIdNotFoundException(ProductIdNotFoundException ex) {
+        var result = ExceptionResponse.builder().code(HttpStatus.NOT_FOUND.value()).message(ex.getMessage()).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
+    }
 }

@@ -1,5 +1,6 @@
 package az.orient.msshopproduct.entity;
 
+import az.orient.msshopproduct.type.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,4 +31,6 @@ public class ProductCategoryEntity {
     private Date updatedAt;
     private Long modelId;
     private Long brandId;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 }
