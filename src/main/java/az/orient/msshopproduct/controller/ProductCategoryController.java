@@ -22,22 +22,28 @@ public class ProductCategoryController {
     public List<ProductCategoryResponseDto> getProductCategories() {
         return productCategoryService.getAllProductCategories();
     }
-    @GetMapping(path = "{id}")
-    public ProductCategoryResponseDto getProductCategoryById(@PathVariable Long id) {
-       return productCategoryService.getProductCategoryById(id);
+
+    @GetMapping(path = "/category/{id}")
+    public List<ProductCategoryResponseDto> getProductCategoryById(@PathVariable Long id) {
+        return productCategoryService.getProductCategoryById(id);
     }
+
+    @GetMapping(path = "/product/{id}")
+    public ProductCategoryResponseDto getProductById(@PathVariable Long id) {
+        return productCategoryService.getProductById(id);
+
+    }
+
     @GetMapping("/by-model/{modelId}")
     public List<ProductWithModelAndBrand> getProductWithModelAndBrand(@PathVariable Long modelId) {
         return productCategoryService.getProductWithModelAndBrand(modelId);
     }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public void createProduct(@RequestBody CreateProductRequestDto createProductRequestDto){
+    public void createProduct(@RequestBody CreateProductRequestDto createProductRequestDto) {
         productCategoryService.createProduct(createProductRequestDto);
     }
-
-
-
 
 
 }

@@ -34,7 +34,7 @@ public class ProductCategoryService {
         return productCategoryRepo.findAllProductCategories();
     }
 
-    public ProductCategoryResponseDto getProductCategoryById(Long id) {
+    public List<ProductCategoryResponseDto> getProductCategoryById(Long id) {
         return productCategoryRepo.findByCategory_Id(id);
     }
 
@@ -105,6 +105,9 @@ public class ProductCategoryService {
 
     }
 
+    public ProductCategoryResponseDto getProductById(Long id) {
+        return productCategoryRepo.findByProductId(id);
+    }
 }
 
 
