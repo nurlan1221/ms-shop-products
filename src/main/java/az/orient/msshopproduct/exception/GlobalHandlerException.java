@@ -19,20 +19,31 @@ public class GlobalHandlerException {
                 .build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
     }
+
     @ExceptionHandler
     public ResponseEntity handleBrandIdNotFoundException(FeignException ex) {
 
         var result = ExceptionResponse.builder().code(HttpStatus.NOT_FOUND.value()).message(ex.getMessage()).build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
     }
-    @ExceptionHandler
+
+    @ExceptionHandler(CategoryIdNotFoundException.class)
     public ResponseEntity handleCategoryIdNotFoundException(CategoryIdNotFoundException ex) {
         var result = ExceptionResponse.builder().code(HttpStatus.NOT_FOUND.value()).message(ex.getMessage()).build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
     }
-    @ExceptionHandler
+
+    @ExceptionHandler(ProductIdNotFoundException.class)
     public ResponseEntity handleProductIdNotFoundException(ProductIdNotFoundException ex) {
         var result = ExceptionResponse.builder().code(HttpStatus.NOT_FOUND.value()).message(ex.getMessage()).build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
     }
+
+    @ExceptionHandler(ModelIdNotFoundException.class)
+    public ResponseEntity handleModelIdNotFoundException(ModelIdNotFoundException ex) {
+        var result = ExceptionResponse.builder().code(HttpStatus.NOT_FOUND.value()).message(ex.getMessage()).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
+    }
+
+
 }

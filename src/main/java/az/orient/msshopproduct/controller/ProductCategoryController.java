@@ -5,6 +5,7 @@ import az.orient.msshopproduct.dto.GetProductByModelId;
 import az.orient.msshopproduct.dto.ProductCategoryResponseDto;
 import az.orient.msshopproduct.dto.ProductWithModelAndBrand;
 import az.orient.msshopproduct.service.ProductCategoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -41,9 +42,10 @@ public class ProductCategoryController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public void createProduct(@RequestBody CreateProductRequestDto createProductRequestDto) {
+    public void createProduct(@RequestBody @Valid CreateProductRequestDto createProductRequestDto) {
         productCategoryService.createProduct(createProductRequestDto);
     }
+
     @DeleteMapping(path = "{id}")
     public void deleteProductById(@PathVariable Long id) {
         productCategoryService.deleteProductById(id);

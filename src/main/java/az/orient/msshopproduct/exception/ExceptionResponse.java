@@ -12,5 +12,4 @@ public class ExceptionResponse {
     private String message;
     private int code;
     private List<FieldException> fieldExceptions;
-
 }

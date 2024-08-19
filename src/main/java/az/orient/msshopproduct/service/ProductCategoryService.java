@@ -7,19 +7,21 @@ import az.orient.msshopproduct.dto.ProductWithModelAndBrand;
 import az.orient.msshopproduct.entity.CategoryEntity;
 import az.orient.msshopproduct.entity.ProductCategoryEntity;
 import az.orient.msshopproduct.entity.ProductEntity;
-import az.orient.msshopproduct.exception.BrandNotFoundException;
-import az.orient.msshopproduct.exception.CategoryIdNotFoundException;
-import az.orient.msshopproduct.exception.ProductIdNotFoundException;
+import az.orient.msshopproduct.exception.*;
 import az.orient.msshopproduct.repository.CategoryRepo;
 import az.orient.msshopproduct.repository.ProductCategoryRepo;
 import az.orient.msshopproduct.repository.ProductRepo;
+import az.orient.msshopproduct.serviceclient.BrandClient;
 import az.orient.msshopproduct.serviceclient.ModelClient;
 import az.orient.msshopproduct.type.Status;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.expression.ExpressionException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +32,7 @@ public class ProductCategoryService {
     private final ModelClient modelClient;
     private final ProductRepo productRepo;
     private final CategoryRepo categoryRepo;
+    private final BrandClient brandClient;
 
     public List<ProductCategoryResponseDto> getAllProductCategories() {
         return productCategoryRepo.findAllProductCategories();
@@ -39,18 +42,18 @@ public class ProductCategoryService {
         return productCategoryRepo.findByCategory_Id(id);
     }
 
-    public List<GetProductByModelId> getProductByModelId(Long id) {
-        List<ProductEntity> products = productRepo.findByModelId(id);
-        return products.stream().map(product -> {
-            GetProductByModelId model = modelClient.getModelById(id);
-            return GetProductByModelId.builder()
-                    .productCode(product.getProductCode())
-                    .productPrice(product.getPrice())
-                    .name(model.getName())
-                    .description(model.getDescription())// Assuming `model.getName()` returns the model name
-                    .build();
-        }).collect(Collectors.toList());
-    }
+//    public List<GetProductByModelId> getProductByModelId(Long id) {
+//        List<ProductEntity> products = productRepo.findByModelId(id);
+//        return products.stream().map(product -> {
+//            GetProductByModelId model = modelClient.getModelById(id);
+//            return GetProductByModelId.builder()
+//                    .productCode(product.getProductCode())
+//                    .productPrice(product.getPrice())
+//                    .name(model.getName())
+//                    .description(model.getDescription())// Assuming `model.getName()` returns the model name
+//                    .build();
+//        }).collect(Collectors.toList());
+//    }
 
     public List<ProductWithModelAndBrand> getProductWithModelAndBrand(Long id) {
         // Fetch models by brandId using the ModelServiceClient
@@ -88,6 +91,20 @@ public class ProductCategoryService {
     }
 
     public void createProduct(CreateProductRequestDto createProductRequestDto) {
+        Long categoryId = createProductRequestDto.getCategoryId();
+        if (!categoryRepo.existsById(categoryId)) {
+            throw new CategoryIdNotFoundException("Category with ID " + categoryId + " not found.");
+        }
+        Long modelId = createProductRequestDto.getModelId();
+        ResponseEntity<GetProductByModelId> responseModel = modelClient.getModelById(modelId);
+        if (responseModel.getStatusCode() != HttpStatus.OK) {
+            throw new ModelIdNotFoundException("Model not found with id:" + modelId);
+        }
+        Long brandId = createProductRequestDto.getBrandId();
+        ResponseEntity responseBrand = brandClient.getBrandById(brandId);
+        if (responseBrand.getStatusCode() != HttpStatus.OK) {
+            throw new BrandNotFoundException("Brand not found with id:" + brandId);
+        }
         ProductEntity productEntity = new ProductEntity();
         productEntity.setProductCode(createProductRequestDto.getProductCode());
         productEntity.setModelId(createProductRequestDto.getModelId());
